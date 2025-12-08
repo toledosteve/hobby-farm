@@ -5,20 +5,10 @@ import {
   Calendar, 
   Package, 
   Settings, 
-  ChevronDown,
-  Cloud,
-  CloudRain,
-  Sun,
-  User
+  Cloud
 } from "lucide-react";
-import { Button } from "../ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import { cn } from "../ui/utils";
+import { UserDropdown } from "./UserDropdown";
 
 interface MainAppLayoutProps {
   children: ReactNode;
@@ -80,28 +70,6 @@ export function MainAppLayout({
             </svg>
             <h1 className="text-lg text-foreground hidden sm:block">Hobby Farm Planner</h1>
           </div>
-
-          {/* Project Picker */}
-          {currentProject && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                  <span className="max-w-[150px] truncate">{currentProject.name}</span>
-                  <ChevronDown className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-[200px]">
-                {projects.map((project) => (
-                  <DropdownMenuItem
-                    key={project.id}
-                    onClick={() => onProjectChange?.(project.id)}
-                  >
-                    {project.name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
         </div>
 
         <div className="flex items-center gap-4">
@@ -112,24 +80,25 @@ export function MainAppLayout({
           </div>
 
           {/* User Menu */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <User className="w-5 h-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <div className="flex flex-col gap-1">
-                  <div>Sarah Johnson</div>
-                  <div className="text-xs text-muted-foreground">sarah@example.com</div>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem onClick={onLogout}>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <UserDropdown
+            farms={projects}
+            currentFarmId={projects.find(p => p.name === currentProject?.name)?.id}
+            onManageAccount={() => onTabChange('settings')}
+            onSwitchFarm={(farmId) => onProjectChange?.(farmId)}
+            onAddNewFarm={() => {
+              console.log('Add new farm - navigate to onboarding');
+            }}
+            onLogout={onLogout}
+            onHelpCenter={() => {
+              window.open('https://help.hobbyfarmplanner.com', '_blank');
+            }}
+            onContactSupport={() => {
+              window.open('mailto:support@hobbyfarmplanner.com', '_blank');
+            }}
+            onSubmitFeedback={() => {
+              console.log('Submit feedback');
+            }}
+          />
         </div>
       </nav>
 

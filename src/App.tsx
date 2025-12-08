@@ -26,6 +26,7 @@ import { EggLogTable } from "./components/poultry/EggLogTable";
 import { AddFlockModal } from "./components/poultry/AddFlockModal";
 import { FeedLogModal } from "./components/poultry/FeedLogModal";
 import { HealthEventModal } from "./components/poultry/HealthEventModal";
+import { SettingsScreen } from "./components/settings/SettingsScreen";
 import { toast } from "sonner@2.0.3";
 
 interface Project {
@@ -387,12 +388,7 @@ function App() {
       case 'modules':
         return <ModulesScreen onOpenModule={handleOpenModule} />;
       case 'settings':
-        return (
-          <div className="p-6 max-w-7xl mx-auto">
-            <h1 className="mb-2">Settings</h1>
-            <p className="text-muted-foreground">Settings screen coming soon</p>
-          </div>
-        );
+        return <SettingsScreen />;
     }
   };
 
