@@ -3,13 +3,14 @@ import { Button } from "../ui/button";
 import { AuthLayout } from "./AuthLayout";
 import { AuthCard } from "./AuthCard";
 import { AuthInput } from "./AuthInput";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { ROUTES } from "@/routes/routes";
+import { toast } from "sonner";
 
-interface SignUpScreenProps {
-  onSignUp: (data: { name: string; email: string; password: string }) => void;
-  onSignInClick: () => void;
-}
-
-export function SignUpScreen({ onSignUp, onSignInClick }: SignUpScreenProps) {
+export function SignUpScreen() {
+  const navigate = useNavigate();
+  const { register } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,7 +18,7 @@ export function SignUpScreen({ onSignUp, onSignInClick }: SignUpScreenProps) {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -39,7 +40,13 @@ export function SignUpScreen({ onSignUp, onSignInClick }: SignUpScreenProps) {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      onSignUp(formData);
+      try {
+        await register(formData.name, formData.email, formData.password);
+        toast.success("Account created successfully!");
+        navigate(ROUTES.PROJECTS);
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "Failed to create account");
+      }
     }
   };
 
@@ -146,7 +153,7 @@ export function SignUpScreen({ onSignUp, onSignInClick }: SignUpScreenProps) {
           <span className="text-muted-foreground">Already have an account? </span>
           <button
             type="button"
-            onClick={onSignInClick}
+            onClick={() => navigate(ROUTES.AUTH.SIGNIN)}
             className="text-primary hover:underline"
           >
             Sign In

@@ -67,7 +67,7 @@ export function CreateProjectScreen({ onContinue, onCancel, onLogout }: CreatePr
   };
 
   return (
-    <OnboardingLayout currentStep={1} totalSteps={6} showBack={false} onLogout={onLogout}>
+    <OnboardingLayout currentStep={1} totalSteps={6} showBack={false}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-8">
           <h1 className="mb-3">Create Your Farm Project</h1>

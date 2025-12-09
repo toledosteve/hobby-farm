@@ -22,13 +22,16 @@ interface Flock {
   createdDate: string;
 }
 
-interface FlockManagementProps {
-  onAddFlock?: () => void;
-  onViewFlock?: (flockId: string) => void;
-}
-
-export function FlockManagement({ onAddFlock, onViewFlock }: FlockManagementProps) {
+export function FlockManagement() {
   const [flocks] = useState<Flock[]>([]);
+
+  const handleAddFlock = () => {
+    console.log('Add flock clicked');
+  };
+
+  const handleViewFlock = (flockId: string) => {
+    console.log('View flock:', flockId);
+  };
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -47,7 +50,7 @@ export function FlockManagement({ onAddFlock, onViewFlock }: FlockManagementProp
             Manage your poultry flocks and track their details
           </p>
         </div>
-        <Button onClick={onAddFlock}>
+        <Button onClick={handleAddFlock}>
           <Plus className="w-4 h-4 mr-2" />
           Add Flock
         </Button>
@@ -94,7 +97,7 @@ export function FlockManagement({ onAddFlock, onViewFlock }: FlockManagementProp
           description="Start by adding your first flock to begin tracking egg production"
           action={{
             label: 'Add Your First Flock',
-            onClick: onAddFlock || (() => {}),
+            onClick: handleAddFlock,
           }}
         />
       ) : viewMode === 'grid' ? (
@@ -104,7 +107,7 @@ export function FlockManagement({ onAddFlock, onViewFlock }: FlockManagementProp
             <div
               key={flock.id}
               className="p-6 rounded-lg border border-border hover:border-primary/50 transition-colors bg-card cursor-pointer"
-              onClick={() => onViewFlock?.(flock.id)}
+              onClick={() => handleViewFlock(flock.id)}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -136,7 +139,7 @@ export function FlockManagement({ onAddFlock, onViewFlock }: FlockManagementProp
                 className="w-full mt-4"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onViewFlock?.(flock.id);
+                  handleViewFlock(flock.id);
                 }}
               >
                 View Details
@@ -163,7 +166,7 @@ export function FlockManagement({ onAddFlock, onViewFlock }: FlockManagementProp
                 <TableRow
                   key={flock.id}
                   className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => onViewFlock?.(flock.id)}
+                  onClick={() => handleViewFlock(flock.id)}
                 >
                   <TableCell>
                     <div className="flex items-center gap-2">
@@ -189,7 +192,7 @@ export function FlockManagement({ onAddFlock, onViewFlock }: FlockManagementProp
                       variant="ghost"
                       onClick={(e) => {
                         e.stopPropagation();
-                        onViewFlock?.(flock.id);
+                        handleViewFlock(flock.id);
                       }}
                     >
                       View

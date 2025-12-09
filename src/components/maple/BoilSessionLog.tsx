@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Plus, Flame, Calendar } from "lucide-react";
+import { Plus, Flame, Calendar, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { DashboardCard } from "../ui/DashboardCard";
@@ -33,11 +35,8 @@ interface BoilSession {
   notes?: string;
 }
 
-interface BoilSessionLogProps {
-  onBack?: () => void;
-}
-
-export function BoilSessionLog({ onBack }: BoilSessionLogProps) {
+export function BoilSessionLog() {
+  const navigate = useNavigate();
   const [sessions] = useState<BoilSession[]>([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [formData, setFormData] = useState({
@@ -78,11 +77,10 @@ export function BoilSessionLog({ onBack }: BoilSessionLogProps) {
           </p>
         </div>
         <div className="flex gap-2">
-          {onBack && (
-            <Button variant="outline" onClick={onBack}>
-              Back
-            </Button>
-          )}
+          <Button variant="outline" onClick={() => navigate(ROUTES.MAPLE.DASHBOARD)}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
           <Button onClick={() => setShowAddDialog(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Log Boil Session

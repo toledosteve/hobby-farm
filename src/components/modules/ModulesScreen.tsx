@@ -1,4 +1,6 @@
 import { Droplets, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
 import { DashboardCard } from "../ui/DashboardCard";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -12,11 +14,22 @@ interface Module {
   stats?: Array<{ label: string; value: string }>;
 }
 
-interface ModulesScreenProps {
-  onOpenModule?: (moduleId: string) => void;
-}
+export function ModulesScreen() {
+  const navigate = useNavigate();
 
-export function ModulesScreen({ onOpenModule }: ModulesScreenProps) {
+  const handleOpenModule = (moduleId: string) => {
+    console.log('Opening module:', moduleId);
+    if (moduleId === 'maple-sugaring') {
+      navigate(ROUTES.MAPLE.DASHBOARD);
+    } else if (moduleId === 'poultry') {
+      navigate(ROUTES.POULTRY.DASHBOARD);
+    }
+  };
+
+  const handleModuleSettings = (moduleId: string) => {
+    console.log('Opening settings for module:', moduleId);
+    // TODO: Implement module-specific settings
+  };
   const modules: Module[] = [
     {
       id: 'maple-sugaring',
@@ -122,11 +135,13 @@ export function ModulesScreen({ onOpenModule }: ModulesScreenProps) {
                 <div className="flex gap-2">
                   <Button
                     className="flex-1"
-                    onClick={() => onOpenModule?.(module.id)}
+                    onClick={() => handleOpenModule(module.id)}
                   >
                     Open Module
                   </Button>
-                  <Button variant="outline">Settings</Button>
+                  <Button variant="outline" onClick={() => handleModuleSettings(module.id)}>
+                    Settings
+                  </Button>
                 </div>
               </div>
             ))}

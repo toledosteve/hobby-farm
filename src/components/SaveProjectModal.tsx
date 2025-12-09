@@ -8,36 +8,59 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { useState } from "react";
 
 interface SaveProjectModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSave: (name: string, notes: string) => void;
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (data: { name: string; location: string; acres?: number }) => Promise<any>;
 }
 
-export function SaveProjectModal({ open, onOpenChange, onSave }: SaveProjectModalProps) {
+export function SaveProjectModal({ isOpen, onClose, onSave }: SaveProjectModalProps) {
   const [projectName, setProjectName] = useState("");
-  const [notes, setNotes] = useState("");
+  const [location, setLocation] = useState("");
+  const [acres, setAcres] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSave = () => {
-    if (projectName.trim()) {
-      onSave(projectName, notes);
+  const handleSave = async () => {
+    if (projectName.trim() && location.trim()) {
+      setIsSubmitting(true);
+      try {
+        await onSave({
+          name: projectName,
+          location: location,
+          acres: acres ? parseFloat(acres) : undefined,
+        });
+        // Reset form
+        setProjectName("");
+        setLocation("");
+        setAcres("");
+        onClose();
+      } catch (error) {
+        // Error is handled by the hook
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
+
+  const handleClose = () => {
+    if (!isSubmitting) {
       setProjectName("");
-      setNotes("");
-      onOpenChange(false);
+      setLocation("");
+      setAcres("");
+      onClose();
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Save Project</DialogTitle>
+          <DialogTitle>Create New Project</DialogTitle>
           <DialogDescription>
-            Give your farm project a name and add any notes you&apos;d like to remember.
+            Start a new farm project by providing some basic information.
           </DialogDescription>
         </DialogHeader>
         
@@ -49,27 +72,44 @@ export function SaveProjectModal({ open, onOpenChange, onSave }: SaveProjectModa
               placeholder="e.g., Livingston Farm"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
+              disabled={isSubmitting}
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="notes">Notes (optional)</Label>
-            <Textarea
-              id="notes"
-              placeholder="Add any important details about your land..."
-              rows={4}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+            <Label htmlFor="location">Location</Label>
+            <Input
+              id="location"
+              placeholder="e.g., Vermont, USA"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="acres">Acreage (optional)</Label>
+            <Input
+              id="acres"
+              type="number"
+              step="0.1"
+              placeholder="e.g., 5.5"
+              value={acres}
+              onChange={(e) => setAcres(e.target.value)}
+              disabled={isSubmitting}
             />
           </div>
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={handleClose} disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={!projectName.trim()}>
-            Save Project
+          <Button 
+            onClick={handleSave} 
+            disabled={!projectName.trim() || !location.trim() || isSubmitting}
+          >
+            {isSubmitting ? "Creating..." : "Create Project"}
           </Button>
         </DialogFooter>
       </DialogContent>

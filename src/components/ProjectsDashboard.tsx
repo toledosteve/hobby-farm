@@ -2,37 +2,36 @@ import { Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { ProjectCard } from "./ui/ProjectCard";
 import { AppHeader } from "./ui/AppHeader";
+import { useProjects } from "@/contexts/ProjectContext";
+import { useProjectOperations } from "@/hooks/useProjectOperations";
+import { useDialog } from "@/hooks/useDialog";
+import { SaveProjectModal } from "./SaveProjectModal";
 
-interface Project {
-  id: string;
-  name: string;
-  location: string;
-  acres?: number;
-}
+export function ProjectsDashboard() {
+  const { projects, isLoading } = useProjects();
+  const { 
+    handleCreateProject, 
+    handleSelectProject, 
+    handleDeleteProject, 
+    handleDuplicateProject 
+  } = useProjectOperations();
+  const createDialog = useDialog();
 
-interface ProjectsDashboardProps {
-  projects: Project[];
-  onCreateNew: () => void;
-  onOpenProject: (id: string) => void;
-  onDeleteProject?: (id: string) => void;
-  onRenameProject?: (id: string) => void;
-  onDuplicateProject?: (id: string) => void;
-  onLogout?: () => void;
-}
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground text-lg">Loading your farms...</p>
+        </div>
+      </div>
+    );
+  }
 
-export function ProjectsDashboard({ 
-  projects, 
-  onCreateNew, 
-  onOpenProject, 
-  onDeleteProject,
-  onRenameProject,
-  onDuplicateProject,
-  onLogout 
-}: ProjectsDashboardProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <AppHeader onLogout={onLogout} />
+      <AppHeader />
 
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
@@ -42,7 +41,7 @@ export function ProjectsDashboard({
               Manage your land planning projects
             </p>
           </div>
-          <Button onClick={onCreateNew} className="gap-2">
+          <Button onClick={createDialog.open} className="gap-2">
             <Plus className="w-4 h-4" />
             Create New Project
           </Button>
@@ -74,7 +73,7 @@ export function ProjectsDashboard({
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               Create your first farm project to start planning your land, viewing soil data, and marking important features.
             </p>
-            <Button onClick={onCreateNew} size="lg" className="gap-2">
+            <Button onClick={createDialog.open} size="lg" className="gap-2">
               <Plus className="w-4 h-4" />
               Create Your First Project
             </Button>
@@ -87,15 +86,21 @@ export function ProjectsDashboard({
                 name={project.name}
                 location={project.location}
                 acres={project.acres}
-                onClick={() => onOpenProject(project.id)}
-                onDelete={onDeleteProject ? () => onDeleteProject(project.id) : undefined}
-                onRename={onRenameProject ? () => onRenameProject(project.id) : undefined}
-                onDuplicate={onDuplicateProject ? () => onDuplicateProject(project.id) : undefined}
+                onClick={() => handleSelectProject(project.id)}
+                onDelete={() => handleDeleteProject(project.id)}
+                onDuplicate={() => handleDuplicateProject(project.id)}
               />
             ))}
           </div>
         )}
       </div>
+
+      {/* Create Project Modal */}
+      <SaveProjectModal
+        isOpen={createDialog.isOpen}
+        onClose={createDialog.close}
+        onSave={handleCreateProject}
+      />
     </div>
   );
 }

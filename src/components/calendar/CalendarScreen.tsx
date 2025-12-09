@@ -12,12 +12,12 @@ interface Task {
   completed: boolean;
 }
 
-interface CalendarScreenProps {
-  onAddTask?: () => void;
-}
-
-export function CalendarScreen({ onAddTask }: CalendarScreenProps) {
+export function CalendarScreen() {
   const [currentMonth, setCurrentMonth] = useState(new Date(2025, 2)); // March 2025
+
+  const handleAddTask = () => {
+    console.log('Add task - to be implemented with modal');
+  };
 
   const tasks: Task[] = [
     { id: '1', title: 'Tap maple trees this weekend', date: '2025-03-08', module: 'Maple', completed: false },
@@ -67,7 +67,7 @@ export function CalendarScreen({ onAddTask }: CalendarScreenProps) {
             Manage your farm tasks and schedule
           </p>
         </div>
-        <Button onClick={onAddTask}>
+        <Button onClick={handleAddTask}>
           <Plus className="w-4 h-4 mr-2" />
           Add Task
         </Button>

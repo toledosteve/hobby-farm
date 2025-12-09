@@ -5,17 +5,9 @@ import { BoundaryCreationScreen } from "./BoundaryCreationScreen";
 import { SoilInsightsScreen } from "./SoilInsightsScreen";
 import { FarmGoalsScreen } from "./FarmGoalsScreen";
 import { SetupCompleteScreen } from "./SetupCompleteScreen";
-
-interface OnboardingFlowProps {
-  onComplete: (projectData: {
-    name: string;
-    location: string;
-    acreage: number;
-    goals: string[];
-  }) => void;
-  onCancel: () => void;
-  onLogout?: () => void;
-}
+import { useNavigate } from "react-router-dom";
+import { useProjectOperations } from "@/hooks/useProjectOperations";
+import { ROUTES } from "@/routes/routes";
 
 type OnboardingStep =
   | "create"
@@ -32,7 +24,9 @@ interface ProjectData {
   goals: string[];
 }
 
-export function OnboardingFlow({ onComplete, onCancel, onLogout }: OnboardingFlowProps) {
+export function OnboardingFlow() {
+  const navigate = useNavigate();
+  const { handleCreateProject } = useProjectOperations();
   const [currentStep, setCurrentStep] = useState<OnboardingStep>("create");
   const [projectData, setProjectData] = useState<ProjectData>({
     name: "",
@@ -41,7 +35,7 @@ export function OnboardingFlow({ onComplete, onCancel, onLogout }: OnboardingFlo
     goals: [],
   });
 
-  const handleCreateProject = (data: {
+  const handleCreateProjectStep = (data: {
     name: string;
     location: string;
     acreage: string;
@@ -78,8 +72,15 @@ export function OnboardingFlow({ onComplete, onCancel, onLogout }: OnboardingFlo
     setCurrentStep("complete");
   };
 
-  const handleOpenEditor = () => {
-    onComplete(projectData);
+  const handleFinalComplete = async () => {
+    // Create the project using the accumulated data
+    await handleCreateProject({
+      name: projectData.name,
+      location: projectData.location,
+      acreage: projectData.acreage.toString(),
+      goals: projectData.goals,
+    });
+    // Navigation happens in useProjectOperations hook
   };
 
   // Step navigation
@@ -102,13 +103,16 @@ export function OnboardingFlow({ onComplete, onCancel, onLogout }: OnboardingFlo
     }
   };
 
+  const handleCancel = () => {
+    navigate(ROUTES.PROJECTS);
+  };
+
   return (
     <>
       {currentStep === "create" && (
         <CreateProjectScreen
-          onContinue={handleCreateProject}
-          onCancel={onCancel}
-          onLogout={onLogout}
+          onContinue={handleCreateProjectStep}
+          onCancel={handleCancel}
         />
       )}
 
@@ -118,7 +122,6 @@ export function OnboardingFlow({ onComplete, onCancel, onLogout }: OnboardingFlo
           location={projectData.location}
           onContinue={handleFindLandComplete}
           onBack={goBack}
-          onLogout={onLogout}
         />
       )}
 
@@ -127,7 +130,6 @@ export function OnboardingFlow({ onComplete, onCancel, onLogout }: OnboardingFlo
           projectName={projectData.name}
           onContinue={handleBoundaryComplete}
           onBack={goBack}
-          onLogout={onLogout}
         />
       )}
 
@@ -137,7 +139,6 @@ export function OnboardingFlow({ onComplete, onCancel, onLogout }: OnboardingFlo
           acreage={projectData.acreage}
           onContinue={handleSoilComplete}
           onBack={goBack}
-          onLogout={onLogout}
         />
       )}
 
@@ -148,7 +149,6 @@ export function OnboardingFlow({ onComplete, onCancel, onLogout }: OnboardingFlo
           onContinue={handleGoalsComplete}
           onBack={goBack}
           onSkip={handleSkipGoals}
-          onLogout={onLogout}
         />
       )}
 
@@ -158,8 +158,7 @@ export function OnboardingFlow({ onComplete, onCancel, onLogout }: OnboardingFlo
           location={projectData.location}
           acreage={projectData.acreage}
           goals={projectData.goals}
-          onOpenEditor={handleOpenEditor}
-          onLogout={onLogout}
+          onOpenEditor={handleFinalComplete}
         />
       )}
     </>

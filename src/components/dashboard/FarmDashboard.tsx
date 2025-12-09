@@ -1,22 +1,37 @@
 import { MapPin, Plus, Droplets, CheckSquare } from "lucide-react";
 import { DashboardCard } from "../ui/DashboardCard";
-import { StatCard } from "../ui/StatCard";
 import { WeatherPanel } from "../ui/WeatherPanel";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import { useProjects } from "@/contexts/ProjectContext";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
 
-interface FarmDashboardProps {
-  farm: {
-    name: string;
-    location: string;
-    acres: number;
+export function FarmDashboard() {
+  const { currentProject } = useProjects();
+  const navigate = useNavigate();
+
+  console.log('FarmDashboard rendering, currentProject:', currentProject);
+
+  // Default farm data if no project selected
+  const farm = currentProject || {
+    name: "My Farm",
+    location: "Select a project",
+    acres: 0,
   };
-  onOpenMapleSugaring?: () => void;
-  onOpenPoultry?: () => void;
-  onAddTask?: () => void;
-}
 
-export function FarmDashboard({ farm, onOpenMapleSugaring, onOpenPoultry, onAddTask }: FarmDashboardProps) {
+  // Navigation handlers
+  const handleOpenMapleSugaring = () => {
+    navigate(ROUTES.MAPLE.DASHBOARD);
+  };
+
+  const handleOpenPoultry = () => {
+    navigate(ROUTES.POULTRY.DASHBOARD);
+  };
+
+  const handleAddTask = () => {
+    console.log('Add task functionality - to be implemented');
+  };
   const tasks = [
     { id: 1, title: "Tap maple trees this weekend", date: "Mar 8-10", completed: false },
     { id: 2, title: "Check sap lines", date: "Mar 12", completed: false },
@@ -91,7 +106,7 @@ export function FarmDashboard({ farm, onOpenMapleSugaring, onOpenPoultry, onAddT
           title="Tasks & Reminders"
           icon={CheckSquare}
           action={
-            <Button size="sm" variant="outline" onClick={onAddTask}>
+            <Button size="sm" variant="outline" onClick={handleAddTask}>
               <Plus className="w-4 h-4 mr-1" />
               Add Task
             </Button>
@@ -128,8 +143,8 @@ export function FarmDashboard({ farm, onOpenMapleSugaring, onOpenPoultry, onAddT
         <DashboardCard title="Active Modules" icon={Droplets}>
           <div className="space-y-4">
             {/* Maple Sugaring Module */}
-            <div className="p-4 rounded-lg border border-border hover:border-primary/50 transition-colors cursor-pointer"
-                 onClick={onOpenMapleSugaring}>
+            <div className="p-4 rounded-lg border border-border hover:border-primary/50 transition-colors bg-card cursor-pointer"
+                 onClick={handleOpenMapleSugaring}>
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span className="text-xl">🍁</span>
@@ -149,14 +164,18 @@ export function FarmDashboard({ farm, onOpenMapleSugaring, onOpenPoultry, onAddT
                 </div>
               </div>
 
-              <Button size="sm" className="w-full" onClick={onOpenMapleSugaring}>
+              <Button 
+                size="sm" 
+                className="w-full" 
+                onClick={handleOpenMapleSugaring}
+              >
                 Open Module
               </Button>
             </div>
 
             {/* Poultry Module */}
-            <div className="p-4 rounded-lg border border-border hover:border-primary/50 transition-colors cursor-pointer"
-                 onClick={onOpenPoultry}>
+            <div className="p-4 rounded-lg border border-border hover:border-primary/50 transition-colors bg-card cursor-pointer"
+                 onClick={handleOpenPoultry}>
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span className="text-xl">🐓</span>
@@ -176,7 +195,11 @@ export function FarmDashboard({ farm, onOpenMapleSugaring, onOpenPoultry, onAddT
                 </div>
               </div>
 
-              <Button size="sm" className="w-full" onClick={onOpenPoultry}>
+              <Button 
+                size="sm" 
+                className="w-full" 
+                onClick={handleOpenPoultry}
+              >
                 Open Module
               </Button>
             </div>

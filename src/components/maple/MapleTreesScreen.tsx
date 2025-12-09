@@ -30,13 +30,16 @@ interface Tree {
   coordinates?: { lat: number; lng: number };
 }
 
-interface MapleTreesScreenProps {
-  onAddTree?: () => void;
-  onAddTap?: () => void;
-}
-
-export function MapleTreesScreen({ onAddTree, onAddTap }: MapleTreesScreenProps) {
+export function MapleTreesScreen() {
   const [trees] = useState<Tree[]>([]);
+
+  const handleAddTree = () => {
+    console.log('Add tree clicked');
+  };
+
+  const handleAddTap = () => {
+    console.log('Add tap clicked');
+  };
   const [selectedTree, setSelectedTree] = useState<Tree | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showTreeDetail, setShowTreeDetail] = useState(false);
@@ -61,7 +64,7 @@ export function MapleTreesScreen({ onAddTree, onAddTap }: MapleTreesScreenProps)
             Manage your sugar bush and track individual trees
           </p>
         </div>
-        <Button onClick={onAddTree}>
+        <Button onClick={handleAddTree}>
           <Plus className="w-4 h-4 mr-2" />
           Add Tree
         </Button>
@@ -77,7 +80,7 @@ export function MapleTreesScreen({ onAddTree, onAddTap }: MapleTreesScreenProps)
               description="Start building your sugar bush by adding maple trees to track"
               action={{
                 label: 'Add Your First Tree',
-                onClick: onAddTree || (() => {}),
+                onClick: handleAddTree,
               }}
             />
           ) : (
@@ -212,7 +215,7 @@ export function MapleTreesScreen({ onAddTree, onAddTap }: MapleTreesScreenProps)
                 <div className="border-t border-border pt-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3>Taps ({selectedTree.taps})</h3>
-                    <Button size="sm" onClick={onAddTap}>
+                    <Button size="sm" onClick={handleAddTap}>
                       <Plus className="w-4 h-4 mr-1" />
                       Add Tap
                     </Button>

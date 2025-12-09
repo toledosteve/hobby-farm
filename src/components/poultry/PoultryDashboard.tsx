@@ -4,6 +4,8 @@ import { DashboardCard } from "../ui/DashboardCard";
 import { StatCard } from "../ui/StatCard";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
 import {
   LineChart,
   Line,
@@ -15,21 +17,17 @@ import {
   Legend,
 } from "recharts";
 
-interface PoultryDashboardProps {
-  onAddFlock?: () => void;
-  onLogEggs?: () => void;
-  onAddFeedLog?: () => void;
-  onAddHealthEvent?: () => void;
-  onManageFlocks?: () => void;
-}
-
-export function PoultryDashboard({
-  onAddFlock,
-  onLogEggs,
-  onAddFeedLog,
-  onAddHealthEvent,
-  onManageFlocks,
-}: PoultryDashboardProps) {
+export function PoultryDashboard() {
+  console.log('PoultryDashboard rendering');
+  const navigate = useNavigate();
+  
+  // Placeholder handlers - to be implemented with modals/forms
+  const handleAddFlock = () => console.log('Add flock - to be implemented');
+  const handleLogEggs = () => console.log('Log eggs - to be implemented');
+  const handleAddFeedLog = () => console.log('Add feed log - to be implemented');
+  const handleAddHealthEvent = () => console.log('Add health event - to be implemented');
+  const handleManageFlocks = () => navigate(ROUTES.POULTRY.FLOCKS);
+  
   const [currentSeason] = useState('2025');
   const [chartView, setChartView] = useState<'all' | 'per-flock'>('all');
 
@@ -65,11 +63,11 @@ export function PoultryDashboard({
           </p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={onAddFlock}>
+          <Button onClick={handleAddFlock}>
             <Plus className="w-4 h-4 mr-2" />
             Add Flock
           </Button>
-          <Button variant="outline" onClick={onLogEggs}>
+          <Button variant="outline" onClick={handleLogEggs}>
             <Egg className="w-4 h-4 mr-2" />
             Log Eggs
           </Button>
@@ -103,19 +101,19 @@ export function PoultryDashboard({
       {/* Quick Actions */}
       <DashboardCard title="Quick Actions">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={onAddFlock}>
+          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={handleAddFlock}>
             <Bird className="w-5 h-5" />
             <span>Add Flock</span>
           </Button>
-          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={onLogEggs}>
+          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={handleLogEggs}>
             <Egg className="w-5 h-5" />
             <span>Log Eggs</span>
           </Button>
-          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={onAddFeedLog}>
+          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={handleAddFeedLog}>
             <Droplet className="w-5 h-5" />
             <span>Add Feed Log</span>
           </Button>
-          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={onAddHealthEvent}>
+          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={handleAddHealthEvent}>
             <Plus className="w-5 h-5" />
             <span>Health Event</span>
           </Button>
@@ -207,7 +205,7 @@ export function PoultryDashboard({
             )}
 
             <div className="pt-4 border-t border-border">
-              <Button variant="outline" className="w-full" onClick={onManageFlocks}>
+              <Button variant="outline" className="w-full" onClick={handleManageFlocks}>
                 <Bird className="w-4 h-4 mr-2" />
                 Manage Flocks
               </Button>

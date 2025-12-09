@@ -4,6 +4,8 @@ import { DashboardCard } from "../ui/DashboardCard";
 import { StatCard } from "../ui/StatCard";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
 import {
   LineChart,
   Line,
@@ -14,21 +16,17 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-interface MapleDashboardProps {
-  onAddTree?: () => void;
-  onAddTap?: () => void;
-  onLogCollection?: () => void;
-  onLogBoil?: () => void;
-  onManageTrees?: () => void;
-}
-
-export function MapleDashboard({
-  onAddTree,
-  onAddTap,
-  onLogCollection,
-  onLogBoil,
-  onManageTrees,
-}: MapleDashboardProps) {
+export function MapleDashboard() {
+  console.log('MapleDashboard rendering');
+  const navigate = useNavigate();
+  
+  // Placeholder handlers - to be implemented with modals/forms
+  const handleAddTree = () => console.log('Add tree - to be implemented');
+  const handleAddTap = () => console.log('Add tap - to be implemented');
+  const handleLogCollection = () => console.log('Log collection - to be implemented');
+  const handleLogBoil = () => console.log('Log boil - to be implemented');
+  const handleManageTrees = () => navigate(ROUTES.MAPLE.TREES);
+  
   const [currentSeason] = useState('2025');
 
   // Mock data
@@ -117,19 +115,19 @@ export function MapleDashboard({
       {/* Quick Actions */}
       <DashboardCard title="Quick Actions">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={onAddTree}>
+          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={handleAddTree}>
             <TreePine className="w-5 h-5" />
             <span>Add Tree</span>
           </Button>
-          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={onAddTap}>
+          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={handleAddTap}>
             <Droplets className="w-5 h-5" />
             <span>Add Tap(s)</span>
           </Button>
-          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={onLogCollection}>
+          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={handleLogCollection}>
             <Plus className="w-5 h-5" />
             <span>Log Collection</span>
           </Button>
-          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={onLogBoil}>
+          <Button variant="outline" className="h-auto py-4 flex flex-col gap-2" onClick={handleLogBoil}>
             <Flame className="w-5 h-5" />
             <span>Log Boil</span>
           </Button>
@@ -191,7 +189,7 @@ export function MapleDashboard({
             )}
 
             <div className="pt-4 border-t border-border">
-              <Button variant="outline" className="w-full" onClick={onManageTrees}>
+              <Button variant="outline" className="w-full" onClick={handleManageTrees}>
                 <TreePine className="w-4 h-4 mr-2" />
                 Manage Trees & Taps
               </Button>

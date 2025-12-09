@@ -2,18 +2,11 @@ import { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { MapArea } from "./MapArea";
 import { SaveProjectModal } from "./SaveProjectModal";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
+import { useProjects } from "@/contexts/ProjectContext";
 
-interface MapScreenProps {
-  currentProject?: {
-    name: string;
-    acres: number;
-  };
-  onBackToDashboard: () => void;
-  onLogout?: () => void;
-}
-
-export function MapScreen({ currentProject, onBackToDashboard, onLogout }: MapScreenProps) {
+export function MapScreen() {
+  const { currentProject } = useProjects();
   const [hasBoundary, setHasBoundary] = useState(false);
   const [showSoilLayer, setShowSoilLayer] = useState(true);
   const [saveModalOpen, setSaveModalOpen] = useState(false);

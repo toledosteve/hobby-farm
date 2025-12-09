@@ -5,21 +5,19 @@ import { AuthCard } from "./AuthCard";
 import { AuthInput } from "./AuthInput";
 import { Alert, AlertDescription } from "../ui/alert";
 import { Mail } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { ROUTES } from "@/routes/routes";
+import { toast } from "sonner";
 
-interface ForgotPasswordScreenProps {
-  onSendResetLink: (email: string) => void;
-  onBackToSignIn: () => void;
-}
-
-export function ForgotPasswordScreen({
-  onSendResetLink,
-  onBackToSignIn,
-}: ForgotPasswordScreenProps) {
+export function ForgotPasswordScreen() {
+  const navigate = useNavigate();
+  const { requestPasswordReset } = useAuth();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -33,8 +31,13 @@ export function ForgotPasswordScreen({
     }
 
     setError("");
-    setSubmitted(true);
-    onSendResetLink(email);
+    try {
+      await requestPasswordReset(email);
+      setSubmitted(true);
+      toast.success("Password reset instructions sent!");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to send reset email");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +62,7 @@ export function ForgotPasswordScreen({
               </AlertDescription>
             </Alert>
             <Button
-              onClick={onBackToSignIn}
+              onClick={() => navigate(ROUTES.AUTH.SIGNIN)}
               variant="outline"
               className="w-full"
               size="lg"
@@ -89,7 +92,7 @@ export function ForgotPasswordScreen({
             <div className="text-center">
               <button
                 type="button"
-                onClick={onBackToSignIn}
+                onClick={() => navigate(ROUTES.AUTH.SIGNIN)}
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Back to Sign In

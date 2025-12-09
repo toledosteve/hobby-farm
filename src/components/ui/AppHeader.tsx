@@ -1,10 +1,11 @@
 import { UserDropdown } from "../layouts/UserDropdown";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
 
-interface AppHeaderProps {
-  onLogout?: () => void;
-}
-
-export function AppHeader({ onLogout }: AppHeaderProps) {
+export function AppHeader() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   return (
     <nav className="h-16 border-b border-border bg-card flex items-center justify-between px-6 shadow-sm">
       <div className="flex items-center gap-2">
@@ -31,10 +32,8 @@ export function AppHeader({ onLogout }: AppHeaderProps) {
       </div>
 
       <UserDropdown
-        onManageAccount={() => {
-          console.log('Navigate to settings - not available on this screen');
-        }}
-        onLogout={onLogout}
+        onManageAccount={() => navigate(ROUTES.APP.SETTINGS)}
+        onLogout={logout}
         onHelpCenter={() => {
           window.open('https://help.hobbyfarmplanner.com', '_blank');
         }}

@@ -9,7 +9,6 @@ interface OnboardingLayoutProps {
   totalSteps: number;
   onBack?: () => void;
   showBack?: boolean;
-  onLogout?: () => void;
 }
 
 export function OnboardingLayout({
@@ -18,12 +17,11 @@ export function OnboardingLayout({
   totalSteps,
   onBack,
   showBack = true,
-  onLogout,
 }: OnboardingLayoutProps) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Main App Header */}
-      <AppHeader onLogout={onLogout} />
+      <AppHeader />
 
       {/* Progress Bar Section */}
       <div className="border-b border-border bg-card">

@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Plus, Egg, Filter, Calendar } from "lucide-react";
+import { Plus, Egg, Filter, Calendar, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { DashboardCard } from "../ui/DashboardCard";
@@ -29,13 +31,13 @@ interface EggLog {
   notes?: string;
 }
 
-interface EggLogTableProps {
-  onLogEggs?: () => void;
-  onBack?: () => void;
-}
-
-export function EggLogTable({ onLogEggs, onBack }: EggLogTableProps) {
+export function EggLogTable() {
+  const navigate = useNavigate();
   const [logs] = useState<EggLog[]>([]);
+  
+  const handleLogEggs = () => {
+    console.log('Log eggs - to be implemented with modal');
+  };
   const [flockFilter, setFlockFilter] = useState<string>('all');
   const [dateRangeFilter, setDateRangeFilter] = useState<string>('all');
 
@@ -59,12 +61,11 @@ export function EggLogTable({ onLogEggs, onBack }: EggLogTableProps) {
           </p>
         </div>
         <div className="flex gap-2">
-          {onBack && (
-            <Button variant="outline" onClick={onBack}>
-              Back
-            </Button>
-          )}
-          <Button onClick={onLogEggs}>
+          <Button variant="outline" onClick={() => navigate(ROUTES.POULTRY.DASHBOARD)}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
+          <Button onClick={handleLogEggs}>
             <Plus className="w-4 h-4 mr-2" />
             Log Eggs
           </Button>
@@ -108,7 +109,7 @@ export function EggLogTable({ onLogEggs, onBack }: EggLogTableProps) {
                 description="Start by logging today's collection to track production over time"
                 action={{
                   label: 'Log First Collection',
-                  onClick: onLogEggs || (() => {}),
+                  onClick: handleLogEggs,
                 }}
               />
             ) : (

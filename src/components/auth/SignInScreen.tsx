@@ -3,25 +3,21 @@ import { Button } from "../ui/button";
 import { AuthLayout } from "./AuthLayout";
 import { AuthCard } from "./AuthCard";
 import { AuthInput } from "./AuthInput";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { ROUTES } from "@/routes/routes";
+import { toast } from "sonner";
 
-interface SignInScreenProps {
-  onSignIn: (data: { email: string; password: string }) => void;
-  onCreateAccountClick: () => void;
-  onForgotPasswordClick: () => void;
-}
-
-export function SignInScreen({
-  onSignIn,
-  onCreateAccountClick,
-  onForgotPasswordClick,
-}: SignInScreenProps) {
+export function SignInScreen() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -38,7 +34,13 @@ export function SignInScreen({
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      onSignIn(formData);
+      try {
+        await login(formData.email, formData.password);
+        toast.success("Welcome back!");
+        navigate(ROUTES.PROJECTS);
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "Failed to sign in");
+      }
     }
   };
 
@@ -79,7 +81,7 @@ export function SignInScreen({
           <div className="flex items-center justify-end">
             <button
               type="button"
-              onClick={onForgotPasswordClick}
+              onClick={() => navigate(ROUTES.AUTH.FORGOT_PASSWORD)}
               className="text-sm text-primary hover:underline"
             >
               Forgot password?
@@ -97,7 +99,7 @@ export function SignInScreen({
           <span className="text-muted-foreground">Don&apos;t have an account? </span>
           <button
             type="button"
-            onClick={onCreateAccountClick}
+            onClick={() => navigate(ROUTES.AUTH.SIGNUP)}
             className="text-primary hover:underline"
           >
             Create one

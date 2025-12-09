@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { 
   Home, 
   Map, 
@@ -9,40 +8,39 @@ import {
 } from "lucide-react";
 import { cn } from "../ui/utils";
 import { UserDropdown } from "./UserDropdown";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useProjects } from "@/contexts/ProjectContext";
+import { ROUTES } from "@/routes/routes";
+import { useAuth } from "@/contexts/AuthContext";
 
-interface MainAppLayoutProps {
-  children: ReactNode;
-  activeTab: 'dashboard' | 'map' | 'calendar' | 'modules' | 'settings';
-  onTabChange: (tab: 'dashboard' | 'map' | 'calendar' | 'modules' | 'settings') => void;
-  currentProject?: {
-    name: string;
-  };
-  projects?: Array<{ id: string; name: string }>;
-  onProjectChange?: (projectId: string) => void;
-  onLogout?: () => void;
-}
-
-export function MainAppLayout({
-  children,
-  activeTab,
-  onTabChange,
-  currentProject,
-  projects = [],
-  onProjectChange,
-  onLogout,
-}: MainAppLayoutProps) {
+export function MainAppLayout() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { projects, currentProject } = useProjects();
+  const { logout } = useAuth();
   const weatherData = {
     temp: 42,
     condition: 'partly-cloudy',
     icon: Cloud,
   };
 
+  // Determine active tab from current route
+  const getActiveTab = () => {
+    if (location.pathname.includes('/map')) return 'map';
+    if (location.pathname.includes('/calendar')) return 'calendar';
+    if (location.pathname.includes('/modules')) return 'modules';
+    if (location.pathname.includes('/settings')) return 'settings';
+    return 'dashboard';
+  };
+
+  const activeTab = getActiveTab();
+
   const navItems = [
-    { id: 'dashboard' as const, label: 'Dashboard', icon: Home },
-    { id: 'map' as const, label: 'Map', icon: Map },
-    { id: 'calendar' as const, label: 'Calendar', icon: Calendar },
-    { id: 'modules' as const, label: 'Modules', icon: Package },
-    { id: 'settings' as const, label: 'Settings', icon: Settings },
+    { id: 'dashboard' as const, label: 'Dashboard', icon: Home, route: ROUTES.APP.DASHBOARD },
+    { id: 'map' as const, label: 'Map', icon: Map, route: ROUTES.APP.MAP },
+    { id: 'calendar' as const, label: 'Calendar', icon: Calendar, route: ROUTES.APP.CALENDAR },
+    { id: 'modules' as const, label: 'Modules', icon: Package, route: ROUTES.APP.MODULES },
+    { id: 'settings' as const, label: 'Settings', icon: Settings, route: ROUTES.APP.SETTINGS },
   ];
 
   return (
@@ -82,13 +80,17 @@ export function MainAppLayout({
           {/* User Menu */}
           <UserDropdown
             farms={projects}
-            currentFarmId={projects.find(p => p.name === currentProject?.name)?.id}
-            onManageAccount={() => onTabChange('settings')}
-            onSwitchFarm={(farmId) => onProjectChange?.(farmId)}
-            onAddNewFarm={() => {
-              console.log('Add new farm - navigate to onboarding');
+            currentFarmId={currentProject?.id}
+            onManageAccount={() => navigate(ROUTES.APP.SETTINGS)}
+            onSwitchFarm={(farmId) => {
+              const project = projects.find(p => p.id === farmId);
+              if (project) {
+                // Project switching is handled by ProjectContext
+                navigate(ROUTES.APP.DASHBOARD);
+              }
             }}
-            onLogout={onLogout}
+            onAddNewFarm={() => navigate(ROUTES.PROJECTS)}
+            onLogout={logout}
             onHelpCenter={() => {
               window.open('https://help.hobbyfarmplanner.com', '_blank');
             }}
@@ -113,7 +115,7 @@ export function MainAppLayout({
               return (
                 <button
                   key={item.id}
-                  onClick={() => onTabChange(item.id)}
+                  onClick={() => navigate(item.route)}
                   className={cn(
                     "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",
                     isActive
@@ -138,7 +140,7 @@ export function MainAppLayout({
               return (
                 <button
                   key={item.id}
-                  onClick={() => onTabChange(item.id)}
+                  onClick={() => navigate(item.route)}
                   className={cn(
                     "flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors min-w-[60px]",
                     isActive
@@ -156,7 +158,7 @@ export function MainAppLayout({
 
         {/* Main Content */}
         <main className="flex-1 overflow-auto pb-20 lg:pb-0">
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>

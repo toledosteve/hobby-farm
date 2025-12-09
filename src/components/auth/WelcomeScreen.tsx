@@ -1,12 +1,10 @@
 import { Button } from "../ui/button";
 import { AuthLayout } from "./AuthLayout";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
 
-interface WelcomeScreenProps {
-  onSignIn: () => void;
-  onCreateAccount: () => void;
-}
-
-export function WelcomeScreen({ onSignIn, onCreateAccount }: WelcomeScreenProps) {
+export function WelcomeScreen() {
+  const navigate = useNavigate();
   return (
     <AuthLayout>
       <div className="w-full max-w-2xl text-center">
@@ -61,7 +59,7 @@ export function WelcomeScreen({ onSignIn, onCreateAccount }: WelcomeScreenProps)
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-sm mx-auto">
           <Button
-            onClick={onSignIn}
+            onClick={() => navigate(ROUTES.AUTH.SIGNIN)}
             variant="outline"
             size="lg"
             className="w-full sm:w-auto min-w-[160px]"
@@ -69,7 +67,7 @@ export function WelcomeScreen({ onSignIn, onCreateAccount }: WelcomeScreenProps)
             Sign In
           </Button>
           <Button
-            onClick={onCreateAccount}
+            onClick={() => navigate(ROUTES.AUTH.SIGNUP)}
             size="lg"
             className="w-full sm:w-auto min-w-[160px]"
           >

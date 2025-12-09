@@ -1,12 +1,11 @@
 import { Button } from "../ui/button";
 import { AuthLayout } from "./AuthLayout";
 import { CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
 
-interface PasswordResetConfirmationProps {
-  onReturnToSignIn: () => void;
-}
-
-export function PasswordResetConfirmation({ onReturnToSignIn }: PasswordResetConfirmationProps) {
+export function PasswordResetConfirmation() {
+  const navigate = useNavigate();
   return (
     <AuthLayout>
       <div className="w-full max-w-md text-center">
@@ -24,7 +23,7 @@ export function PasswordResetConfirmation({ onReturnToSignIn }: PasswordResetCon
         </p>
 
         {/* Action */}
-        <Button onClick={onReturnToSignIn} size="lg" className="min-w-[200px]">
+        <Button onClick={() => navigate(ROUTES.AUTH.SIGNIN)} size="lg" className="min-w-[200px]">
           Return to Sign In
         </Button>
 

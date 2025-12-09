@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Plus, Droplets, Calendar } from "lucide-react";
+import { Plus, Droplets, Calendar, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/routes/routes";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { DashboardCard } from "../ui/DashboardCard";
@@ -31,11 +33,8 @@ interface SapCollection {
   notes?: string;
 }
 
-interface SapCollectionLogProps {
-  onBack?: () => void;
-}
-
-export function SapCollectionLog({ onBack }: SapCollectionLogProps) {
+export function SapCollectionLog() {
+  const navigate = useNavigate();
   const [collections] = useState<SapCollection[]>([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [formData, setFormData] = useState({
@@ -77,11 +76,10 @@ export function SapCollectionLog({ onBack }: SapCollectionLogProps) {
           </p>
         </div>
         <div className="flex gap-2">
-          {onBack && (
-            <Button variant="outline" onClick={onBack}>
-              Back
-            </Button>
-          )}
+          <Button variant="outline" onClick={() => navigate(ROUTES.MAPLE.DASHBOARD)}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
           <Button onClick={() => setShowAddDialog(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Log Collection
