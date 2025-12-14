@@ -1,0 +1,8 @@
+/logs/
+!/logs/.gitkeep
+.DS_Store
+/data/
+!/data/.gitkeep
+!/code/.gitkeep
+.env
+/**/*.env
