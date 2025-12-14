@@ -5,4 +5,5 @@
 !/data/.gitkeep
 !/code/.gitkeep
 .env
-/**/*.env
+/code/**/*.env
+*.sh
