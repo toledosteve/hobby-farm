@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker logs:*)",
+      "Bash(curl:*)",
+      "Bash(jq:*)",
+      "Bash(docker restart:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(tree:*)",
+      "Bash(npm install:*)",
+      "Bash(docker-compose ps:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker exec:*)",
+      "Bash(docker ps:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose logs:*)",
+      "Bash(source:*)",
+      "Bash(echo:*)",
+      "Bash(tee:*)",
+      "Bash(bash:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm run build:*)",
+      "Bash(docker-compose restart:*)",
+      "Bash(npx tsc:*)",
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(timeout 8 npm run dev:*)"
+    ]
+  }
+}

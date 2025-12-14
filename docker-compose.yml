@@ -1,0 +1,72 @@
+services:
+  database:
+    image: mongo:7
+    container_name: farm-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongo:/data/db
+    networks:
+      - hobby-farm
+    healthcheck:
+      test: ["CMD", "mongosh",
+             "-u", "root",
+             "-p", "password",
+             "--authenticationDatabase", "admin",
+             "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    container_name: farm-backend
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      MONGODB_URI: "mongodb://root:password@database:27017/hobby-farm?authSource=admin"
+      JWT_SECRET: "tL6!vN7)jE0*vN0?pO7%uL4>lH8.tS6;"
+      FRONTEND_URL: "http://localhost:3000"
+    volumes:
+      - ./code/backend:/usr/app
+      - exclude-backend:/usr/app/node_modules
+    ports:
+      - "3001:3001"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - hobby-farm
+
+  frontend:
+    container_name: farm-frontend
+    build:
+      context: .
+      dockerfile: ./docker/frontend/Dockerfile
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./code/frontend:/usr/app
+      - exclude-frontend:/usr/app/node_modules
+    ports:
+      - "3000:3000"      # ← corrected
+    depends_on:
+      backend:
+        condition: service_started
+    networks:
+      - hobby-farm
+
+networks:
+  hobby-farm:
+    driver: bridge
+
+volumes:
+  mongo-data:
+  exclude-backend:
+  exclude-frontend:
